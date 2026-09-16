@@ -1,0 +1,1018 @@
+{
+  "_readme": "MetaMAP profile. Edit names, types (count = simulated locations, cap = [min, max] people, residential = has occupancy), programs, population groups and the escalation chain. Change \"id\" and \"name\" before uploading so it is added as a new profile. \"configuration\" holds thresholds, anomaly rules, AutoComm channels and AutoBotz.",
+  "exported": "2026-09-16T18:39:48.687Z",
+  "format": "metamap-profile",
+  "schema": 1,
+  "id": "social-protection-mimp",
+  "industry": "public",
+  "name": "Social Protection Services (MIMP)",
+  "nameEs": "Servicios de Protección Social (MIMP)",
+  "org": "COES MIMP",
+  "orgLong": "Peru's Ministry of Women and Vulnerable Populations — Sector Emergency Operations Center (COES MIMP)",
+  "terms": {
+    "en": {
+      "one": "Location",
+      "many": "Locations"
+    },
+    "es": {
+      "one": "Local",
+      "many": "Locales"
+    }
+  },
+  "person": "Coordinator",
+  "team": "Brigade",
+  "scoreLabel": "Operational status",
+  "total": 96,
+  "programs": {
+    "warmi": {
+      "label": "Warmi Ñan",
+      "desc": "Prevention and response to violence against women and family members"
+    },
+    "inabif": {
+      "label": "INABIF",
+      "desc": "National Comprehensive Family Welfare Program"
+    },
+    "gratitud": {
+      "label": "Gratitud",
+      "desc": "Older adults program"
+    },
+    "conadis": {
+      "label": "CONADIS",
+      "desc": "National Council for People with Disabilities"
+    },
+    "dgnna": {
+      "label": "DGNNA",
+      "desc": "Directorate General for Children and Adolescents"
+    }
+  },
+  "types": [
+    {
+      "key": "cem24",
+      "acronym": "CEM 24H",
+      "label": "Women's Emergency Center 24H",
+      "labelEs": "Centro Emergencia Mujer 24 horas",
+      "program": "warmi",
+      "residential": false,
+      "count": 24,
+      "cap": [
+        10,
+        30
+      ],
+      "name": "{acronym} {district}",
+      "pop": {
+        "women": 0.7,
+        "children": 0.25,
+        "older": 0.03,
+        "disability": 0.02
+      }
+    },
+    {
+      "key": "cemr",
+      "acronym": "CEM",
+      "label": "Women's Emergency Center",
+      "labelEs": "Centro Emergencia Mujer",
+      "program": "warmi",
+      "residential": false,
+      "count": 34,
+      "cap": [
+        8,
+        24
+      ],
+      "name": "{acronym} {district}",
+      "pop": {
+        "women": 0.72,
+        "children": 0.22,
+        "older": 0.04,
+        "disability": 0.02
+      }
+    },
+    {
+      "key": "sar",
+      "acronym": "SAR",
+      "label": "Rural Care Service",
+      "labelEs": "Servicio de Atención Rural",
+      "program": "warmi",
+      "residential": false,
+      "count": 8,
+      "cap": [
+        6,
+        15
+      ],
+      "name": "{acronym} {district}",
+      "pop": {
+        "women": 0.7,
+        "children": 0.25,
+        "older": 0.03,
+        "disability": 0.02
+      }
+    },
+    {
+      "key": "sau",
+      "acronym": "SAU",
+      "label": "Urgent Care Service",
+      "labelEs": "Servicio de Atención Urgente",
+      "program": "warmi",
+      "residential": false,
+      "count": 1,
+      "cap": [
+        6,
+        12
+      ],
+      "name": "{acronym} {district}",
+      "pop": {
+        "women": 0.75,
+        "children": 0.2,
+        "older": 0.03,
+        "disability": 0.02
+      }
+    },
+    {
+      "key": "cai",
+      "acronym": "CAI",
+      "label": "Institutional Care Center",
+      "labelEs": "Centro de Atención Institucional",
+      "program": "warmi",
+      "residential": false,
+      "count": 1,
+      "cap": [
+        10,
+        25
+      ],
+      "name": "{acronym} {district}",
+      "pop": {}
+    },
+    {
+      "key": "hrt",
+      "acronym": "HRT",
+      "label": "Temporary Shelter Home",
+      "labelEs": "Hogar de Refugio Temporal",
+      "program": "warmi",
+      "residential": true,
+      "confidential": true,
+      "regions": [
+        "Arequipa",
+        "Cusco",
+        "Ica",
+        "Junín",
+        "La Libertad",
+        "Lambayeque",
+        "Lima",
+        "Piura"
+      ],
+      "count": 4,
+      "cap": [
+        12,
+        30
+      ],
+      "threshold": 80,
+      "name": "{acronym} {province}",
+      "pop": {
+        "women": 0.55,
+        "children": 0.43,
+        "disability": 0.02
+      }
+    },
+    {
+      "key": "carnna",
+      "acronym": "CAR",
+      "label": "Residential Care Center — children",
+      "labelEs": "CAR niñas, niños y adolescentes",
+      "program": "inabif",
+      "residential": true,
+      "count": 7,
+      "cap": [
+        20,
+        60
+      ],
+      "threshold": 65,
+      "name": "CAR {house}",
+      "pop": {
+        "children": 0.92,
+        "disability": 0.08
+      }
+    },
+    {
+      "key": "cedif",
+      "acronym": "CEDIF",
+      "label": "Family Development Center",
+      "labelEs": "Centro de Desarrollo Integral de la Familia",
+      "program": "inabif",
+      "residential": false,
+      "count": 4,
+      "cap": [
+        40,
+        120
+      ],
+      "name": "{acronym} {district}",
+      "pop": {
+        "children": 0.6,
+        "women": 0.28,
+        "older": 0.1,
+        "disability": 0.02
+      }
+    },
+    {
+      "key": "sec",
+      "acronym": "SEC",
+      "label": "Street Educators Service",
+      "labelEs": "Servicio de Educadores de Calle",
+      "program": "inabif",
+      "residential": false,
+      "count": 3,
+      "cap": [
+        10,
+        25
+      ],
+      "name": "{acronym} {district}",
+      "pop": {
+        "children": 0.95,
+        "women": 0.05
+      }
+    },
+    {
+      "key": "carpam",
+      "acronym": "CAR PAM",
+      "label": "Residential Care Center — older adults",
+      "labelEs": "CAR personas adultas mayores",
+      "program": "gratitud",
+      "residential": true,
+      "count": 2,
+      "cap": [
+        20,
+        50
+      ],
+      "threshold": 65,
+      "name": "CAR {house}",
+      "pop": {
+        "older": 0.9,
+        "disability": 0.1
+      }
+    },
+    {
+      "key": "cad",
+      "acronym": "CAD",
+      "label": "Day Care Center — older adults",
+      "labelEs": "Centro de Atención de Día",
+      "program": "gratitud",
+      "residential": false,
+      "count": 3,
+      "cap": [
+        30,
+        80
+      ],
+      "name": "{acronym} {district}",
+      "pop": {
+        "older": 0.9,
+        "disability": 0.1
+      }
+    },
+    {
+      "key": "carpcd",
+      "acronym": "CAR PCD",
+      "label": "Residential Care Center — disability",
+      "labelEs": "CAR personas con discapacidad",
+      "program": "conadis",
+      "residential": true,
+      "count": 2,
+      "cap": [
+        15,
+        40
+      ],
+      "threshold": 65,
+      "name": "CAR {house}",
+      "pop": {
+        "disability": 0.7,
+        "children": 0.2,
+        "older": 0.1
+      }
+    },
+    {
+      "key": "upe",
+      "acronym": "UPE",
+      "label": "Special Protection Unit",
+      "labelEs": "Unidad de Protección Especial",
+      "program": "dgnna",
+      "residential": false,
+      "count": 3,
+      "cap": [
+        15,
+        40
+      ],
+      "name": "{acronym} {region}",
+      "pop": {
+        "children": 0.9,
+        "women": 0.1
+      }
+    }
+  ],
+  "houseNames": [
+    "Esperanza",
+    "Los Girasoles",
+    "Nuevo Amanecer",
+    "Santa Rosa",
+    "Virgen de Fátima",
+    "Casa del Sol",
+    "San Francisco",
+    "Las Gardenias",
+    "Sagrada Familia",
+    "Buen Pastor",
+    "Nazaret",
+    "Los Pinos",
+    "Santa Teresita",
+    "Luz y Vida",
+    "Belén",
+    "Mi Hogar",
+    "Nuevo Horizonte",
+    "La Alborada",
+    "Los Laureles",
+    "Semillitas"
+  ],
+  "popGroups": {
+    "children": "Children & adolescents",
+    "women": "Women",
+    "older": "Older adults",
+    "disability": "People with disabilities"
+  },
+  "popTitle": "People served",
+  "chain": {
+    "coordinator": "Location coordinator on duty",
+    "group": "Territorial coordinators group",
+    "escalation": "OSDN",
+    "escalationLong": "OSDN — National Security and Defense Office",
+    "leadership": "Alta Dirección",
+    "duty": "COES MIMP duty officer",
+    "brigade": "Operational Brigade lead",
+    "national": "OSDN and Alta Dirección"
+  },
+  "defaultLang": "es",
+  "configuration": {
+    "layers": {
+      "org": {
+        "thresholds": {
+          "status:lower": {
+            "value": 45,
+            "enabled": true,
+            "severity": "critical",
+            "peak": {
+              "mode": "off",
+              "windows": []
+            },
+            "responses": [
+              {
+                "id": "r1",
+                "type": "alert",
+                "name": "Notify location coordinator",
+                "channels": [
+                  "c-sms",
+                  "c-wa"
+                ],
+                "bots": [],
+                "subject": "{{shelter}}: operational status {{value}}%",
+                "message": "Status fell below {{threshold}}%. Main issue: {{issue}}.",
+                "payload": ""
+              },
+              {
+                "id": "r2",
+                "type": "action",
+                "name": "Open follow-up case",
+                "channels": [],
+                "bots": [
+                  "b-case"
+                ],
+                "subject": "",
+                "message": "",
+                "payload": ""
+              }
+            ]
+          },
+          "occupancy:upper": {
+            "value": 75,
+            "enabled": true,
+            "severity": "warning",
+            "peak": {
+              "mode": "observed",
+              "windows": []
+            },
+            "responses": [
+              {
+                "id": "r3",
+                "type": "alert",
+                "name": "Occupancy warning",
+                "channels": [
+                  "c-wa"
+                ],
+                "bots": [],
+                "subject": "{{shelter}} at {{value}}% occupancy",
+                "message": "Above the {{threshold}}% threshold.",
+                "payload": ""
+              }
+            ]
+          },
+          "occfull:upper": {
+            "value": 100,
+            "enabled": true,
+            "severity": "critical",
+            "peak": {
+              "mode": "off",
+              "windows": []
+            },
+            "responses": [
+              {
+                "id": "r4",
+                "type": "alert",
+                "name": "Location full — escalate to OSDN",
+                "channels": [
+                  "c-coer"
+                ],
+                "bots": [],
+                "subject": "{{shelter}} is full",
+                "message": "{{value}}% of places in use.",
+                "payload": ""
+              },
+              {
+                "id": "r5",
+                "type": "action",
+                "name": "Activate support brigade",
+                "channels": [],
+                "bots": [
+                  "b-brig"
+                ],
+                "subject": "",
+                "message": "",
+                "payload": ""
+              }
+            ]
+          },
+          "supplies:lower": {
+            "value": 2,
+            "enabled": true,
+            "severity": "warning",
+            "peak": {
+              "mode": "off",
+              "windows": []
+            },
+            "responses": [
+              {
+                "id": "r6",
+                "type": "action",
+                "name": "Dispatch humanitarian kits",
+                "channels": [],
+                "bots": [
+                  "b-log"
+                ],
+                "subject": "",
+                "message": "",
+                "payload": ""
+              }
+            ]
+          },
+          "presence:lower": {
+            "value": 60,
+            "enabled": true,
+            "severity": "warning",
+            "peak": {
+              "mode": "observed",
+              "windows": []
+            },
+            "responses": []
+          },
+          "ratio:upper": {
+            "value": 12,
+            "enabled": true,
+            "severity": "warning",
+            "peak": {
+              "mode": "observed",
+              "windows": []
+            },
+            "responses": [
+              {
+                "id": "r7",
+                "type": "action",
+                "name": "Activate Operational Brigade",
+                "channels": [],
+                "bots": [
+                  "b-brig"
+                ],
+                "subject": "",
+                "message": "",
+                "payload": ""
+              }
+            ]
+          },
+          "overdue:upper": {
+            "value": 2,
+            "enabled": true,
+            "severity": "warning",
+            "peak": {
+              "mode": "off",
+              "windows": []
+            },
+            "responses": []
+          },
+          "report:upper": {
+            "value": 60,
+            "enabled": true,
+            "severity": "warning",
+            "peak": {
+              "mode": "manual",
+              "windows": [
+                {
+                  "from": "00:00",
+                  "to": "05:00",
+                  "days": "all"
+                }
+              ]
+            },
+            "responses": [
+              {
+                "id": "r8",
+                "type": "alert",
+                "name": "Reporting delay notice",
+                "channels": [
+                  "c-sms"
+                ],
+                "bots": [],
+                "subject": "",
+                "message": "",
+                "payload": ""
+              }
+            ]
+          },
+          "operation:upper": {
+            "value": 0,
+            "enabled": true,
+            "severity": "warning",
+            "peak": {
+              "mode": "off",
+              "windows": []
+            },
+            "responses": [
+              {
+                "id": "r9",
+                "type": "alert",
+                "name": "Escalate to OSDN",
+                "channels": [
+                  "c-coer",
+                  "c-coes"
+                ],
+                "bots": [],
+                "subject": "{{shelter}}: service not operating normally",
+                "message": "Operation level {{value}} (1 virtual · 2 suspended).",
+                "payload": ""
+              }
+            ]
+          },
+          "exposure:upper": {
+            "value": 0,
+            "enabled": true,
+            "severity": "warning",
+            "peak": {
+              "mode": "off",
+              "windows": []
+            },
+            "responses": [
+              {
+                "id": "r10",
+                "type": "alert",
+                "name": "Request confirmation from coordinator",
+                "channels": [
+                  "c-sms",
+                  "c-wa"
+                ],
+                "bots": [],
+                "subject": "{{shelter}}: please confirm your status",
+                "message": "An active incident (severity {{value}}) affects your area. Confirm operation, damage, basic services, access, and people affected.",
+                "payload": ""
+              }
+            ]
+          }
+        }
+      },
+      "region:Lima": {
+        "thresholds": {
+          "occupancy:upper": {
+            "responses": [
+              {
+                "id": "r11",
+                "type": "alert",
+                "name": "Occupancy warning",
+                "channels": [
+                  "c-wa",
+                  "c-lima"
+                ],
+                "bots": [],
+                "subject": "{{shelter}} at {{value}}% occupancy",
+                "message": "Above the {{threshold}}% threshold.",
+                "payload": ""
+              }
+            ]
+          }
+        }
+      },
+      "type:carpcd": {
+        "thresholds": {
+          "occupancy:upper": {
+            "value": 65
+          }
+        }
+      },
+      "type:hrt": {
+        "thresholds": {
+          "occupancy:upper": {
+            "value": 80
+          }
+        }
+      },
+      "type:carpam": {
+        "thresholds": {
+          "occupancy:upper": {
+            "value": 65
+          }
+        }
+      },
+      "type:carnna": {
+        "thresholds": {
+          "occupancy:upper": {
+            "value": 65
+          }
+        }
+      }
+    },
+    "comms": [
+      {
+        "id": "c-sms",
+        "type": "sms",
+        "label": "Location coordinator on duty",
+        "values": [
+          "Coordinator mobile"
+        ],
+        "scope": "org"
+      },
+      {
+        "id": "c-wa",
+        "type": "whatsapp",
+        "label": "Territorial coordinators group",
+        "values": [
+          "COES MIMP coordinators group"
+        ],
+        "scope": "org"
+      },
+      {
+        "id": "c-coer",
+        "type": "email",
+        "label": "OSDN — National Security and Defense Office",
+        "values": [
+          "osdn@example.gob.pe"
+        ],
+        "scope": "org"
+      },
+      {
+        "id": "c-lead",
+        "type": "email",
+        "label": "Alta Dirección",
+        "values": [
+          "alta.direcci.n@example.gob.pe"
+        ],
+        "scope": "org"
+      },
+      {
+        "id": "c-coes",
+        "type": "whatsapp",
+        "label": "COES MIMP duty officer",
+        "values": [
+          "Duty officer mobile"
+        ],
+        "scope": "org"
+      },
+      {
+        "id": "c-lima",
+        "type": "slack",
+        "label": "#ops-lima",
+        "values": [
+          "Lima operations workspace"
+        ],
+        "scope": "region:Lima"
+      },
+      {
+        "id": "c-call",
+        "type": "call",
+        "label": "Operational Brigade lead",
+        "values": [
+          "Brigade lead phone"
+        ],
+        "scope": "org"
+      }
+    ],
+    "botz": [
+      {
+        "id": "b-log",
+        "type": "webhook",
+        "label": "Logistics dispatch",
+        "provider": "customer",
+        "scope": "org",
+        "ref": "https://logistica.example.gob.pe/hooks/dispatch",
+        "method": "POST",
+        "payload": "{\"shelter\":\"{{shelter}}\",\"days\":{{value}}}",
+        "verify": {
+          "state": "unverified",
+          "ts": null,
+          "msg": ""
+        }
+      },
+      {
+        "id": "b-brig",
+        "type": "webhook",
+        "label": "Operational Brigade activation",
+        "provider": "bzzzbox",
+        "scope": "org",
+        "ref": "hooks/brigade",
+        "method": "POST",
+        "payload": "{\"shelter\":\"{{shelter}}\"}",
+        "verify": {
+          "state": "unverified",
+          "ts": null,
+          "msg": ""
+        }
+      },
+      {
+        "id": "b-case",
+        "type": "rpa",
+        "label": "Case system opener",
+        "provider": "customer",
+        "scope": "org",
+        "ref": "rpa/open-case",
+        "params": "queue=coes,priority=high",
+        "timeout": "2 min",
+        "verify": {
+          "state": "unverified",
+          "ts": null,
+          "msg": ""
+        }
+      },
+      {
+        "id": "b-synth",
+        "type": "synthetics",
+        "label": "Reporting app check",
+        "provider": "bzzzbox",
+        "scope": "org",
+        "ref": "syn/report-app",
+        "env": "production",
+        "onfail": "Report + alert",
+        "verify": {
+          "state": "unverified",
+          "ts": null,
+          "msg": ""
+        }
+      },
+      {
+        "id": "b-agent",
+        "type": "agent",
+        "label": "Location triage agent",
+        "provider": "bzzzbox",
+        "scope": "org",
+        "ref": "agents/shelter-triage",
+        "goal": "Status parts, occupancy and incidents",
+        "cap": "20 / day",
+        "approval": "Require approval",
+        "verify": {
+          "state": "unverified",
+          "ts": null,
+          "msg": ""
+        }
+      }
+    ],
+    "anomalies": {
+      "known": [
+        {
+          "id": "k-cluster",
+          "name": "Regional critical cluster",
+          "cond": "builtin",
+          "builtin": "cluster",
+          "param": 2,
+          "paramLabel": "Critical shelters in one region",
+          "enabled": true,
+          "desc": "Several shelters in the same region are critical at the same time.",
+          "responses": [
+            {
+              "id": "r12",
+              "type": "alarm",
+              "name": "Escalate region to OSDN and Alta Dirección",
+              "channels": [
+                "c-coer",
+                "c-lead",
+                "c-coes"
+              ],
+              "bots": [],
+              "subject": "{{region}}: {{value}} critical shelters",
+              "message": "Coordinated response required.",
+              "payload": ""
+            }
+          ]
+        },
+        {
+          "id": "k-surge",
+          "name": "Occupancy surge",
+          "cond": "builtin",
+          "builtin": "surge",
+          "param": 88,
+          "paramLabel": "Combined regional occupancy %",
+          "enabled": true,
+          "desc": "Shelters in a region fill up together, above their usual level.",
+          "responses": [
+            {
+              "id": "r13",
+              "type": "alert",
+              "name": "Escalate to OSDN",
+              "channels": [
+                "c-coer"
+              ],
+              "bots": [],
+              "subject": "",
+              "message": "",
+              "payload": ""
+            }
+          ]
+        },
+        {
+          "id": "k-blackout",
+          "name": "Reporting blackout",
+          "cond": "builtin",
+          "builtin": "blackout",
+          "param": 2,
+          "paramLabel": "Silent shelters in one region",
+          "enabled": true,
+          "desc": "Several shelters stop reporting at once — likely connectivity.",
+          "responses": [
+            {
+              "id": "r14",
+              "type": "action",
+              "name": "Check reporting app",
+              "channels": [],
+              "bots": [
+                "b-synth"
+              ],
+              "subject": "",
+              "message": "",
+              "payload": ""
+            }
+          ]
+        },
+        {
+          "id": "k-supplies",
+          "name": "Supply depletion trend",
+          "cond": "builtin",
+          "builtin": "supplies",
+          "param": 5,
+          "paramLabel": "Shelters below minimum supplies",
+          "enabled": true,
+          "desc": "Many shelters run low on supplies at the same time.",
+          "responses": [
+            {
+              "id": "r15",
+              "type": "action",
+              "name": "Dispatch humanitarian kits",
+              "channels": [],
+              "bots": [
+                "b-log"
+              ],
+              "subject": "",
+              "message": "",
+              "payload": ""
+            },
+            {
+              "id": "r16",
+              "type": "alert",
+              "name": "Request COES MIMP review",
+              "channels": [
+                "c-coes"
+              ],
+              "bots": [],
+              "subject": "",
+              "message": "",
+              "payload": ""
+            }
+          ]
+        },
+        {
+          "id": "k-backlog",
+          "name": "Work backlog",
+          "cond": "builtin",
+          "builtin": "backlog",
+          "param": 6,
+          "paramLabel": "Overdue tasks across one brigade",
+          "enabled": true,
+          "desc": "A brigade accumulates overdue tasks across its shelters.",
+          "responses": [
+            {
+              "id": "r17",
+              "type": "alert",
+              "name": "Brigade lead notice",
+              "channels": [
+                "c-wa"
+              ],
+              "bots": [],
+              "subject": "",
+              "message": "",
+              "payload": ""
+            }
+          ]
+        },
+        {
+          "id": "k-comms",
+          "name": "Communications surge",
+          "cond": "builtin",
+          "builtin": "comms",
+          "params": {
+            "signalAt": 2,
+            "promoteAt": 4,
+            "windowMin": 30
+          },
+          "paramLabels": {
+            "signalAt": "Shelters for a reported signal",
+            "promoteAt": "Shelters to auto-promote to an incident",
+            "windowMin": "Time window (min)"
+          },
+          "enabled": true,
+          "desc": "Urgent calls and WhatsApp messages about the same hazard from several shelters in one province. A reported signal appears first; at the higher bar it becomes an incident automatically.",
+          "responses": [
+            {
+              "id": "r18",
+              "type": "alert",
+              "name": "Notify COES MIMP duty officer",
+              "channels": [
+                "c-coes",
+                "c-coer"
+              ],
+              "bots": [],
+              "subject": "",
+              "message": "",
+              "payload": ""
+            }
+          ]
+        },
+        {
+          "id": "k-transfer",
+          "name": "Repeated transfers out",
+          "cond": "frequency",
+          "keywords": "transferred, referred",
+          "count": 2,
+          "windowMin": 60,
+          "enabled": true,
+          "desc": "",
+          "responses": [
+            {
+              "id": "r19",
+              "type": "alert",
+              "name": "Coordinator check-in",
+              "channels": [
+                "c-sms"
+              ],
+              "bots": [],
+              "subject": "",
+              "message": "",
+              "payload": ""
+            }
+          ]
+        },
+        {
+          "id": "k-need",
+          "name": "Crew asks for help",
+          "cond": "contains",
+          "keywords": "need extra hands, site closed",
+          "enabled": false,
+          "desc": "",
+          "responses": []
+        }
+      ],
+      "unknown": {
+        "critical": [
+          {
+            "id": "r20",
+            "type": "alert",
+            "name": "Request COES MIMP review",
+            "channels": [
+              "c-coes"
+            ],
+            "bots": [],
+            "subject": "",
+            "message": "",
+            "payload": ""
+          },
+          {
+            "id": "r21",
+            "type": "action",
+            "name": "Run triage agent",
+            "channels": [],
+            "bots": [
+              "b-agent"
+            ],
+            "subject": "",
+            "message": "",
+            "payload": ""
+          }
+        ],
+        "warning": []
+      }
+    }
+  }
+}
