@@ -11,6 +11,7 @@ import { allowlist, clientIp, dbConfigured, dbInsert, dbSelect, iso, rateLimiter
 const KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.REPORT_FROM;
 const ALLOWED = allowlist(process.env.REPORT_ALLOWED_RECIPIENTS);
+const DAILY_LIMIT = Number(process.env.REPORT_DAILY_LIMIT) || 50;
 
 const COOLDOWN_MS = 10 * 60_000;
 const MAX_B64 = 12_000_000;
@@ -55,6 +56,11 @@ export default async function handler(req, res) {
       await dbInsert('metamap_report_sent', { recipients, subject, status: 'suppressed' });
       return sendJson(res, 200, { ok: true, suppressed: true });
     }
+    // Recipients are open to whole domains, so a hard daily ceiling bounds abuse.
+    const today = await dbSelect('metamap_report_sent', [
+      ['select', 'id'], ['status', 'eq.sent'], ['created_at', `gt.${iso(Date.now() - 86_400_000)}`], ['limit', String(DAILY_LIMIT)],
+    ]);
+    if (today.length >= DAILY_LIMIT) return sendJson(res, 429, { error: 'daily report limit reached' });
 
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',

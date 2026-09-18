@@ -29,14 +29,19 @@ Aplicar `supabase/migrations/20260918120000_metamap_comms.sql` en el proyecto Su
 | `TWILIO_AUTH_TOKEN` | | SMS (también valida el webhook) |
 | `TWILIO_FROM` | `+15550001111` | SMS |
 | `TWILIO_WEBHOOK_URL` | `https://metamap.bzzzbx.com/api/sms-inbound` | SMS — debe ser idéntica a la configurada en Twilio |
-| `SMS_ALLOWED_NUMBERS` | `+51987654321,+51912345678` | SMS — **solo estos números reciben mensajes** |
+| `SMS_ALLOWED_NUMBERS` | `+51*,+57*` | SMS — números exactos o prefijos con `*` (hoy: todo Perú y Colombia) |
+| `SMS_DAILY_LIMIT` | `200` (por defecto) | SMS — tope de envíos reales en 24 h |
 | `RESEND_API_KEY` | `re_…` | email |
-| `REPORT_FROM` | `COES MetaMAP <coes@bzzzbx.com>` | email — dominio **verificado en Resend** |
-| `REPORT_ALLOWED_RECIPIENTS` | `coes@mimp.gob.pe,@bzzzbx.com` | email — direcciones o `@dominio` |
+| `REPORT_FROM` | `COES MetaMAP <notifications@bzzzbx.com>` | email — dominio **verificado en Resend** |
+| `REPORT_ALLOWED_RECIPIENTS` | `@boss.technology,@mimp.gob.pe` | email — direcciones o `@dominio` |
+| `REPORT_DAILY_LIMIT` | `50` (por defecto) | email — tope de reportes enviados en 24 h |
 
 Las listas permitidas no son opcionales: sin ellas cada envío responde 403. La página es pública
 y los endpoints no llevan secreto, así que sin lista cualquiera con `curl` podría mandar SMS o
-correos a nuestra costa desde nuestro dominio.
+correos a nuestra costa desde nuestro dominio. Al abrir países o dominios enteros, el tope diario
+limita el costo de un abuso; al alcanzarlo, los envíos responden 429 hasta que pasen 24 h.
+El consentimiento de cada participante (ver `/sms-consent`) queda a cargo del coordinador: el
+sistema ya no lo verifica número por número.
 
 Después de cambiar variables hay que redesplegar (`vercel deploy --prod --scope bosstechnology`).
 
@@ -66,6 +71,8 @@ El engine v0.35 reenvía mensajes en tres situaciones (ver abajo). El backend lo
 - El mismo reporte (asunto + destinatarios) sale una vez cada 10 min. Solo se aceptan adjuntos
   PDF.
 - Límite por IP: 120/min en `/api/sms`, 10/min en `/api/report`.
+- Tope diario: 200 SMS y 50 reportes en 24 h (configurable con `SMS_DAILY_LIMIT` /
+  `REPORT_DAILY_LIMIT`).
 
 ## 6. Prueba por capas
 

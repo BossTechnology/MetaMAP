@@ -10,12 +10,16 @@ const SID = process.env.TWILIO_ACCOUNT_SID;
 const TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const FROM = process.env.TWILIO_FROM;
 const ALLOWED = allowlist(process.env.SMS_ALLOWED_NUMBERS);
+const DAILY_LIMIT = Number(process.env.SMS_DAILY_LIMIT) || 200;
 
 const KINDS = new Set(['alert', 'welfare', 'remind', 'ack']);
 const DELIVERED = 'not.in.(failed,suppressed)';
 const COOLDOWN_MS = 10 * 60_000;
 const ANCHOR_WINDOW_MS = 24 * 3600_000;
 const limited = rateLimiter(120);
+
+// Entries are full E.164 numbers or prefixes ending in "*", e.g. "+51*" for all of Peru.
+const allowed = (n) => ALLOWED.some((e) => (e.endsWith('*') ? n.startsWith(e.slice(0, -1)) : n === e));
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'method not allowed' });
@@ -42,13 +46,18 @@ async function send(p, res) {
   if (!body || body.length > 480) return sendJson(res, 400, { error: 'body missing or too long' });
   // Every message is a drill. Refuse anything that does not say so.
   if (!/SIMULACRO|DRILL/i.test(body)) return sendJson(res, 400, { error: 'body must be marked as a drill' });
-  if (!ALLOWED.includes(to)) return sendJson(res, 403, { error: 'recipient is not in SMS_ALLOWED_NUMBERS' });
+  if (!allowed(to)) return sendJson(res, 403, { error: 'recipient is not allowed by SMS_ALLOWED_NUMBERS' });
 
   const row = { emergency_id: eid, to_number: to, kind, body };
   if (await isRepeat(to, kind)) {
     await dbInsert('metamap_sms_sent', { ...row, status: 'suppressed' });
     return sendJson(res, 200, { ok: true, suppressed: true });
   }
+  // Recipients are open to whole countries, so a hard daily ceiling bounds the cost of abuse.
+  const today = await dbSelect('metamap_sms_sent', [
+    ['select', 'id'], ['status', DELIVERED], ['created_at', `gt.${iso(Date.now() - 86_400_000)}`], ['limit', String(DAILY_LIMIT)],
+  ]);
+  if (today.length >= DAILY_LIMIT) return sendJson(res, 429, { error: 'daily SMS limit reached' });
 
   const tw = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${SID}/Messages.json`, {
     method: 'POST',
