@@ -3,7 +3,10 @@
     { "source": "/", "destination": "/engine", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/engine", "destination": "/engine.html" }
+    { "source": "/engine", "destination": "/engine.html" },
+    { "source": "/termsconditions", "destination": "/legal/terms.html" },
+    { "source": "/privacypolicy", "destination": "/legal/privacy.html" },
+    { "source": "/sms-consent", "destination": "/legal/sms-consent.html" }
   ],
   "headers": [
     {
