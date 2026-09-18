@@ -34,7 +34,8 @@ Aplicar `supabase/migrations/20260918120000_metamap_comms.sql` en el proyecto Su
 | `RESEND_API_KEY` | `re_…` | email |
 | `REPORT_FROM` | `COES MetaMAP <notifications@bzzzbx.com>` | email — dominio **verificado en Resend** |
 | `REPORT_ALLOWED_RECIPIENTS` | `@boss.technology,@mimp.gob.pe` | email — direcciones o `@dominio` |
-| `REPORT_DAILY_LIMIT` | `50` (por defecto) | email — tope de reportes enviados en 24 h |
+| `REPORT_DAILY_LIMIT` | `50` (por defecto) | email — tope de correos (destinatarios) en 24 h |
+| `REPORT_OPEN_UNTIL` | `2026-09-20T23:59:00-05:00` | email — opcional: acepta **cualquier** dirección hasta esa hora (demos); después vuelve sola a la lista |
 
 Las listas permitidas no son opcionales: sin ellas cada envío responde 403. La página es pública
 y los endpoints no llevan secreto, así que sin lista cualquiera con `curl` podría mandar SMS o
@@ -71,7 +72,7 @@ El engine v0.35 reenvía mensajes en tres situaciones (ver abajo). El backend lo
 - El mismo reporte (asunto + destinatarios) sale una vez cada 10 min. Solo se aceptan adjuntos
   PDF.
 - Límite por IP: 120/min en `/api/sms`, 10/min en `/api/report`.
-- Tope diario: 200 SMS y 50 reportes en 24 h (configurable con `SMS_DAILY_LIMIT` /
+- Tope diario: 200 SMS y 50 correos en 24 h (configurable con `SMS_DAILY_LIMIT` /
   `REPORT_DAILY_LIMIT`).
 
 ## 6. Prueba por capas
