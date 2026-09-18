@@ -31,8 +31,10 @@ check "message without SIMULACRO refused" 400 \
 check "inbound without Twilio signature refused" 403 "$(code -X POST "$B/api/sms-inbound" -d 'From=%2B10000000000&Body=SI')"
 
 echo "Email — nothing is sent"
-check "recipient outside REPORT_ALLOWED_RECIPIENTS refused" 403 \
-  "$(post "$B/api/report" -d '{"op":"send","to":["smoke-test@example.com"],"subject":"x","pdfBase64":"JVBERi0="}')"
+# An allowed domain plus a non-PDF attachment stops before Resend whether or not
+# REPORT_OPEN_UNTIL is open; 400 (not 503) proves the secrets and database are wired.
+check "secrets loaded, non-PDF attachment refused" 400 \
+  "$(post "$B/api/report" -d '{"op":"send","to":["smoke-test@boss.technology"],"subject":"x","pdfBase64":"TVo="}')"
 
 echo "Public pages"
 for p in termsconditions privacypolicy sms-consent; do check "/$p" 200 "$(code "$B/$p")"; done
