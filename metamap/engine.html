@@ -14686,7 +14686,7 @@ const NE_SCENARIOS={
     zones:[['Cusco','cold',80,3],['Urubamba','cold',50,2],['Huancayo','cold',70,3],['Tarma','cold',40,2],['Arequipa','cold',60,2]]}
 };
 const NECFG={scenario:'quake',mode:'off',everySec:120,volume:80,repeatSiren:false,_rot:0,
-  delayMin:0,country:'PE',numbers:[],smsEndpoint:'',armed:false};
+  delayMin:0,country:'PE',numbers:[],smsEndpoint:'/api/sms',armed:false};
 const NE_COUNTRIES=[['PE','+51','Peru'],['US','+1','United States'],['MX','+52','Mexico'],['CO','+57','Colombia'],['CL','+56','Chile'],['AR','+54','Argentina'],['BR','+55','Brazil'],['ES','+34','Spain']];
 const neDial=c=>(NE_COUNTRIES.find(x=>x[0]===c)||NE_COUNTRIES[0])[1];
 // Alert messages. Every one is prefixed as a drill: real SMS that reads like an official
@@ -15843,7 +15843,7 @@ function rpBrandSync(){
 }
 
 // ═══ SCHEDULED REPORT BY EMAIL ═══
-const RPCFG={mode:'off',delayMin:0,subject:'',message:'',emails:[],endpoint:'',armed:false};
+const RPCFG={mode:'off',delayMin:0,subject:'',message:'',emails:[],endpoint:'/api/report',armed:false};
 const RP_MAIL={timer:null,last:null};
 const rpDefSubject=()=>`${rpT('Resumen Diario','Daily Summary')} — ${PROFILE.org||'COES'} — ${rpDateLong(new Date()).replace(/^Lima, /,'')}`;
 const rpDefMessage=()=>rpT(

@@ -47,11 +47,12 @@ Consola → el número → **A MESSAGE COMES IN** → HTTP POST →
 
 ## 4. En el menú de MetaMAP
 
-- SMS endpoint URL: `/api/sms`
-- Report endpoint URL: `/api/report`
+Los endpoints vienen fijos en `engine.html` (handoff §6, opción 2): `NECFG.smsEndpoint = '/api/sms'`
+y `RPCFG.endpoint = '/api/report'`. El menú aparece ya lleno y los envíos son reales para los
+destinatarios de las listas permitidas. Para una demo simulada, borrar el campo antes de aplicar.
 
-Relativas: funcionan igual en producción y en previews. Se borran al recargar la página (ver §6
-del handoff para dejarlas fijas).
+**Al recibir una versión nueva de `engine.html` hay que repetir estos dos cambios**; el proveedor
+los entrega vacíos.
 
 ## 5. Protecciones del backend
 
