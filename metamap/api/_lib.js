@@ -1,6 +1,8 @@
 // Shared helpers for the /api functions. The underscore prefix keeps Vercel from
 // exposing this file as a route.
 
+import crypto from 'node:crypto';
+
 const SB_URL = process.env.SUPABASE_URL;
 const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -56,4 +58,23 @@ export async function dbInsert(table, row) {
     body: JSON.stringify(row),
   });
   if (!r.ok) throw new Error(`insert ${table}: ${r.status} ${await r.text()}`);
+}
+
+export async function dbUpdate(table, params, row) {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?${new URLSearchParams(params)}`, {
+    method: 'PATCH',
+    headers: sbHeaders({ prefer: 'return=minimal' }),
+    body: JSON.stringify(row),
+  });
+  if (!r.ok) throw new Error(`update ${table}: ${r.status} ${await r.text()}`);
+}
+
+// https://www.twilio.com/docs/usage/webhooks/webhooks-security — HMAC-SHA1 over the full
+// webhook URL followed by every POST parameter name+value, sorted by name.
+export function twilioSignatureValid(req, params, url) {
+  const token = process.env.TWILIO_AUTH_TOKEN || '';
+  const data = Object.keys(params).sort().reduce((acc, k) => acc + k + params[k], url);
+  const expected = Buffer.from(crypto.createHmac('sha1', token).update(data, 'utf8').digest('base64'));
+  const given = Buffer.from(String(req.headers['x-twilio-signature'] || ''));
+  return Boolean(token) && given.length === expected.length && crypto.timingSafeEqual(given, expected);
 }

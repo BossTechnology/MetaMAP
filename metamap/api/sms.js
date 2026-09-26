@@ -11,6 +11,7 @@ const TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const FROM = process.env.TWILIO_FROM;
 const ALLOWED = allowlist(process.env.SMS_ALLOWED_NUMBERS);
 const DAILY_LIMIT = Number(process.env.SMS_DAILY_LIMIT) || 200;
+const STATUS_CALLBACK = process.env.TWILIO_STATUS_CALLBACK_URL || '';
 
 const KINDS = new Set(['alert', 'welfare', 'remind', 'ack']);
 const DELIVERED = 'not.in.(failed,suppressed)';
@@ -59,13 +60,17 @@ async function send(p, res) {
   ]);
   if (today.length >= DAILY_LIMIT) return sendJson(res, 429, { error: 'daily SMS limit reached' });
 
+  // With the callback set, /api/sms-status replaces "queued" with what actually happened.
+  const form = new URLSearchParams({ To: to, From: FROM, Body: body });
+  if (STATUS_CALLBACK) form.set('StatusCallback', STATUS_CALLBACK);
+
   const tw = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${SID}/Messages.json`, {
     method: 'POST',
     headers: {
       authorization: 'Basic ' + Buffer.from(`${SID}:${TOKEN}`).toString('base64'),
       'content-type': 'application/x-www-form-urlencoded',
     },
-    body: new URLSearchParams({ To: to, From: FROM, Body: body }),
+    body: form,
   });
   const result = await tw.json().catch(() => ({}));
   await dbInsert('metamap_sms_sent', {

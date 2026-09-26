@@ -29,6 +29,8 @@ check "number outside SMS_ALLOWED_NUMBERS refused" 403 \
 check "message without SIMULACRO refused" 400 \
   "$(post "$B/api/sms" -d '{"op":"send","to":"+10000000000","body":"smoke test","kind":"alert"}')"
 check "inbound without Twilio signature refused" 403 "$(code -X POST "$B/api/sms-inbound" -d 'From=%2B10000000000&Body=SI')"
+check "delivery receipt without Twilio signature refused" 403 \
+  "$(code -X POST "$B/api/sms-status" -d 'MessageSid=SMtest&MessageStatus=delivered')"
 
 echo "Email — nothing is sent"
 # An allowed domain plus a non-PDF attachment stops before Resend whether or not

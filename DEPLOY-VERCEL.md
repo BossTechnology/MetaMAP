@@ -8,6 +8,7 @@ funciones corren en Vercel, en el mismo dominio que el engine:
 | `/api/ai` | — | BOBee → proxy público de BOb (`bob.bzzzbx.com/api/ai`) |
 | `/api/sms` | `metamap-sms` | Envía SMS por Twilio y devuelve respuestas |
 | `/api/sms-inbound` | `metamap-sms-inbound` | Webhook de Twilio para respuestas entrantes |
+| `/api/sms-status` | — | Acuses de entrega de Twilio: escribe el estado real en `metamap_sms_sent` |
 | `/api/report` | `metamap-report` | Envía el Resumen Diario por Resend |
 
 Mismo contrato JSON que el del proveedor (`server/COMMUNICATIONS-IMPLEMENTATION.md` §3), así que
@@ -29,6 +30,7 @@ Aplicar `supabase/migrations/20260918120000_metamap_comms.sql` en el proyecto Su
 | `TWILIO_AUTH_TOKEN` | | SMS (también valida el webhook) |
 | `TWILIO_FROM` | `+15550001111` | SMS |
 | `TWILIO_WEBHOOK_URL` | `https://metamap.bzzzbx.com/api/sms-inbound` | SMS — debe ser idéntica a la configurada en Twilio |
+| `TWILIO_STATUS_CALLBACK_URL` | `https://metamap.bzzzbx.com/api/sms-status` | SMS — Twilio reporta ahí la entrega; sin ella el estado se queda en `queued` |
 | `SMS_ALLOWED_NUMBERS` | `+51*,+57*` | SMS — números exactos o prefijos con `*` (hoy: todo Perú y Colombia) |
 | `SMS_DAILY_LIMIT` | `200` (por defecto) | SMS — tope de envíos reales en 24 h |
 | `RESEND_API_KEY` | `re_…` | email |
@@ -74,6 +76,9 @@ El engine v0.35 reenvía mensajes en tres situaciones (ver abajo). El backend lo
 - Límite por IP: 120/min en `/api/sms`, 10/min en `/api/report`.
 - Tope diario: 200 SMS y 50 correos en 24 h (configurable con `SMS_DAILY_LIMIT` /
   `REPORT_DAILY_LIMIT`).
+- Los acuses de Twilio llegan a `/api/sms-status` (firma verificada) y actualizan `status` y
+  `error` de cada mensaje: `delivered`, `undelivered` con su código (30007 filtrado por el
+  operador, 30008 error desconocido, 21408 país sin *Geo permission*), o `failed`.
 
 ## 6. Prueba por capas
 
