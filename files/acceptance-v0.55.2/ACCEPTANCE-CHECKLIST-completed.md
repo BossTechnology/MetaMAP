@@ -80,6 +80,11 @@ Not completed here — **needs a person at a real machine.**
       is in review, and we have not yet confirmed whether Colombian carriers deliver from it.
       Question for you: do you have delivery experience for Peru and Colombia from a US number, or
       should we move to a local sender?
+- [x] **Delivery receipts are now wired up** — the item COMMUNICATIONS-IMPLEMENTATION.md §5 lists as
+      missing. `/api/sms` sends a `StatusCallback`, and `/api/sms-status` (Twilio signature checked)
+      writes the real outcome into `metamap_sms_sent.status`, with the carrier code in `error`
+      (30007 filtering, 30008 unknown, 21408 country not enabled). Messages no longer sit at
+      "queued", so the next real drill will say plainly whether Colombia delivered.
 - [x] The message is prefixed `SIMULACRO MetaMAP — no es una emergencia real` (enforced server side:
       `/api/sms` rejects any body without SIMULACRO/DRILL, exactly as your function does)
 - [ ] Reply `SI` → acknowledgement → panel shows **Safe**: untested, because nothing was delivered
