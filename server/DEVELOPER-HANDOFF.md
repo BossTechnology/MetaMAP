@@ -3,7 +3,11 @@
 Everything needed to take MetaMAP from the demo package to a working deployment on your own
 infrastructure. Follow the steps in order; each one can be verified before moving on.
 
-Contact for questions about the engine itself: Boss.Technology.
+Version: v0.55.2 (upgrading from v0.44? read `UPGRADE-v0.44-to-v0.55.2.md` first). Contact for questions about the engine itself: Boss.Technology.
+
+When you are finished, complete `ACCEPTANCE-CHECKLIST.md` and send it back with the items it
+asks for. That checklist is the definition of done — every line is something observable, so
+neither side has to take the other's word for it.
 
 ---
 
@@ -18,8 +22,9 @@ metamap/
     jspdf/             jsPDF 2.5.1
     fonts/             DM Sans (woff2) + dm-sans.css
   server/
+    DEVELOPER-HANDOFF.md               this document — start here
+    ACCEPTANCE-CHECKLIST.md            fill in and return when the deployment is done
     COMMUNICATIONS-IMPLEMENTATION.md   reference for both channels (contracts, limits)
-    DEVELOPER-HANDOFF.md               this document
     supabase/
       schema.sql                       two tables for SMS
       functions/metamap-sms/           Twilio send + reply lookup
@@ -254,6 +259,18 @@ Making pages 4–7 real means connecting SENAMHI, IGP, MTC and El Peruano. Repla
 819 means loading MIMP's own list. Both are separate pieces of work, not blockers.
 
 ---
+
+## 9b. Two things that will look broken and are not
+
+- **The microphone does nothing when MetaMAP is embedded.** A cross-origin frame only receives the
+  microphone if the embedding page delegates it with `allow="microphone"`. Granting the permission
+  to the outer site does not reach in, there is no prompt and no error, and recognition simply
+  ends. MetaMAP detects this and disables the button with an explanation. Test interaction mode in
+  a normal top-level tab on https, in Chrome, Edge or Safari. Firefox has no speech recognition at
+  all.
+- **BOBee answering "Local summary — the AI did not answer"** means `/api/ai` is not reachable.
+  The engine falls back to locally computed text and labels it. Check the route before suspecting
+  the engine.
 
 ## 10. Where things live inside engine.html
 
