@@ -1,0 +1,28 @@
+MetaMAP v0.55.2 — every network request made by the page
+Captured 25 September 2026 from https://metamap.bzzzbx.com/engine?industry=public
+Source: the browser's own Performance API (performance.getEntriesByType), i.e. the same list
+DevTools shows in its Network panel.
+
+DOCUMENT
+  https://metamap.bzzzbx.com/engine            (307 from /, serves engine.html, 2,784,428 bytes)
+
+RESOURCES (6)
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans.css                   [link]
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-400-normal.woff2 [css]
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-500-normal.woff2 [css]
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-600-normal.woff2 [css]
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-700-normal.woff2 [css]
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-800-normal.woff2 [css]
+
+DISTINCT ORIGINS: 1
+  https://metamap.bzzzbx.com
+
+Nothing is requested from a third party.
+
+Notes
+- Leaflet 1.9.4 is inlined in engine.html in this build, so it makes no request at all.
+- jsPDF is fetched on demand the first time a report is built. Verified it comes from
+  /vendor/jspdf/jspdf.umd.min.js; the CDN fallback in jspdfReady() is never reached, and would in
+  any case be refused by this site's Content-Security-Policy (script-src 'self').
+- On demand, the page also calls its own API on the same origin: /api/ai (BOBee), and /api/sms and
+  /api/report when an alert or a report is armed.
