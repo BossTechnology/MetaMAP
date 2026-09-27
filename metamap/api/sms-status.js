@@ -21,6 +21,9 @@ export default async function handler(req, res) {
   const status = String(params.MessageStatus || params.SmsStatus || '').slice(0, 40);
   const code = String(params.ErrorCode || '').slice(0, 20);
   if (sid && status) {
+    // Logged so the outcome is readable in `vercel logs` too, not only in the table.
+    // The recipient's number is deliberately not logged.
+    console.log(`sms-status ${sid} ${status}${code ? ' error ' + code : ''}`);
     await dbUpdate('metamap_sms_sent', { twilio_sid: `eq.${sid}` }, {
       status,
       error: code ? `Twilio ${code}` : null,
