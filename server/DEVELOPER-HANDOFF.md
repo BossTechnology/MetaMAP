@@ -3,7 +3,12 @@
 Everything needed to take MetaMAP from the demo package to a working deployment on your own
 infrastructure. Follow the steps in order; each one can be verified before moving on.
 
-Version: v0.55.2 (upgrading from v0.44? read `UPGRADE-v0.44-to-v0.55.2.md` first). Contact for questions about the engine itself: Boss.Technology.
+Version: **v0.56.4**. Upgrading from v0.55.2? read `UPGRADE-v0.55.2-to-v0.56.4.md` first. From v0.44? read
+`UPGRADE-v0.44-to-v0.55.2.md`, then the v0.56.4 upgrade. Contact for questions about the engine itself: Boss.Technology.
+
+MetaMAP now runs **four industries** from one file: public services (MIMP, Peru), national retail
+(NAF NAF, Colombia), restaurant chains (Delosi, Peru) and **financial services (SuRed, Colombia,
+about 10,000 cash points)**. Section 2b describes each one and what to check.
 
 When you are finished, complete `ACCEPTANCE-CHECKLIST.md` and send it back with the items it
 asks for. That checklist is the definition of done — every line is something observable, so
@@ -15,7 +20,7 @@ neither side has to take the other's word for it.
 
 ```
 metamap/
-  engine.html          the whole application — one self-contained file, ~2 MB
+  engine.html          the whole application — one self-contained file, ~3.7 MB (four industries)
   index.html           redirect to engine.html (only if your server cannot redirect)
   vendor/
     leaflet/           Leaflet 1.9.4
@@ -24,6 +29,8 @@ metamap/
   server/
     DEVELOPER-HANDOFF.md               this document — start here
     ACCEPTANCE-CHECKLIST.md            fill in and return when the deployment is done
+    UPGRADE-v0.55.2-to-v0.56.4.md      what changed since v0.55.2 and what to re-check
+    UPGRADE-v0.44-to-v0.55.2.md        the earlier upgrade (only if production still runs v0.44)
     COMMUNICATIONS-IMPLEMENTATION.md   reference for both channels (contracts, limits)
     supabase/
       schema.sql                       two tables for SMS
@@ -47,9 +54,11 @@ belong on the web root.
 | Resend account and a **verified sending domain** | emails the daily report | you |
 | MIMP artwork: crest, cover photograph, COES lockup, source logos | so the report looks like their boletín | MIMP |
 | The real location list (code, name, type, coordinates) | replaces the simulated 819 | MIMP / COES |
+| SuRed's verified point list (the data team's master, once verified) | replaces the unverified and generated points | SuRed |
+| SuRed's commission rates, cash ceilings and payment calendar | replaces plausible simulation values | SuRed |
 | Feed access: SENAMHI, IGP, MTC, El Peruano | makes report pages 4–7 real rather than simulated | MIMP / COES |
 
-The last three are not needed to deploy. The engine runs fully without them.
+The customer items are not needed to deploy. The engine runs fully without them.
 
 ---
 
@@ -63,8 +72,49 @@ rsync -av engine.html index.html vendor/ user@server:/var/www/metamap/
 Keep `vendor/` beside `engine.html`. The page loads nothing from the internet, so it works on a
 closed network.
 
-**Verify:** open `https://metamap.bzzzbx.com/engine.html`. The map should draw, 819 locations
-should appear in the left column, and cards should start arriving within a minute.
+**Verify:** open `https://metamap.bzzzbx.com/engine.html`. The **industry menu** opens with four
+tiles. Choose Public services: the map should draw, 819 locations should appear in the left column,
+and cards should start arriving within a minute. Then check the other three industries (section 2b).
+
+---
+
+## 2b. The four industries
+
+The industry menu opens first; nothing is preloaded. Each industry can also be opened directly:
+
+| Industry | Direct link | Country | Locations | Opening view (desktop) |
+|---|---|---|---|---|
+| Public services (MIMP) | `engine.html?industry=public` | Peru | 819 | 32 numbered circles |
+| National retail (NAF NAF) | `engine.html?industry=retail` | Colombia | 90 | 23 numbered circles |
+| Restaurant chains (Delosi) | `engine.html?industry=restaurants` | Peru | 476 | 16 numbered circles |
+| **Financial services (SuRed)** | `engine.html?industry=financial` | Colombia | **10,000** | 40 numbered circles |
+
+**Financial services — SuRed (new in v0.56).** SuRed (Matrix Giros y Servicios) is a transactional
+network — giros sent and paid, government subsidy payouts, bill collections, mobile top-ups,
+crypto-to-cash, micro-insurance — run through regional brands (GANA, La Perla, GanaGana, Acertemos,
+JER, Su Chance, Paga Todo, Apuestas Cúcuta 75, Red de Servicios del Cesar), SuRed's own points in
+Nariño and Putumayo, and the SuperGIROS partner network elsewhere.
+
+- **Data.** 5,717 points come from SuRed's data master (5,942 rows, 225 duplicates merged; none yet
+  verified as operating). The rest, up to about 10,000, are generated for the brands missing from the
+  master and are marked "generated" in each point's Overview. Municipalities: DANE DIVIPOLA 2025 (CC0).
+- **The card.** Five slots — Cashier · Systems · Equipment · Cash · Communications — then TXNS,
+  commission in pesos, a meter to the volume goal and the volume. Cash is two-sided: amber under 20% or
+  over 85% of the point's ceiling, red under 10% or at the insured limit. A blue calendar above the
+  volume marks a subsidy payment day.
+- **The detail panel.** Overview · Cashier · Systems · Equipment · Cash · Transactions (TXNS) ·
+  Communications · Signals · Compliance · Configuration.
+- **Colours.** The point's own failures (terminal, connection, SuRed's core, cash) are blue; outside
+  causes (carrier, PSE, identity provider, grid power, robbery, paro armado) are red.
+- **Brand- and network-wide incidents** (core degraded, code verification, identity validation, PSE,
+  top-ups) have no zone on the map; they reach every affected point through its Systems slot.
+- **Scale.** Above 1,500 locations the simulation updates a rotating share of the network each tick,
+  plus every point in an incident, selected or on screen. Load takes a few seconds; a tick takes
+  roughly 200–350 ms on a laptop. Smaller industries are simulated exactly as before.
+
+**The map, every industry.** At country and region zoom it shows only numbered circles (on a desktop's
+national view, one per department plus one per major metropolitan area). Incident zones, signals and
+pins appear as you zoom in; highlighted and open locations always show as pins.
 
 ## 3. Connect the AI
 
@@ -202,7 +252,10 @@ Resend keys stay in Supabase.
 Run each in order; each proves one layer.
 
 **Engine**
-1. Page loads, map draws, cards arrive. → the static deployment works.
+1. Page loads on the industry menu (four tiles); each industry's direct link opens it; map draws,
+   cards arrive. → the static deployment works.
+1b. Financial services: 10,000 points in the left column (shown as **10K**), five slots on each card,
+   the Transactions tab reads **TXNS**. On a phone, typing in any left-menu search shows suggestions.
 
 **SMS, simulated**
 2. Leave the SMS endpoint blank, add a number, **On** + **Start now**, Apply Config. Within a
@@ -249,6 +302,7 @@ Run each in order; each proves one layer.
 | Part | Today |
 |---|---|
 | Locations (819), status, staffing, occupancy, tasks | simulated, from the profile |
+| SuRed points | 5,717 from SuRed's (unverified) master, the rest generated and marked; transactions, cash, commission simulated |
 | Incidents, weather, traffic, basic services | simulated |
 | Report pages 1–3 and 8 | built from the above |
 | Report pages 4–7 (roads, seismic, meteorological, services) | simulated, each marked in its source line |
@@ -268,6 +322,9 @@ Making pages 4–7 real means connecting SENAMHI, IGP, MTC and El Peruano. Repla
   ends. MetaMAP detects this and disables the button with an explanation. Test interaction mode in
   a normal top-level tab on https, in Chrome, Edge or Safari. Firefox has no speech recognition at
   all.
+- **A network-wide incident marks every SuRed card.** When PSE or a top-up operator is down across
+  the network, every card carries it (for example "2 incidentes"). That is the incident, not a
+  display fault.
 - **BOBee answering "Local summary — the AI did not answer"** means `/api/ai` is not reachable.
   The engine falls back to locally computed text and labels it. Check the route before suspecting
   the engine.
@@ -286,6 +343,11 @@ It is one file, but the sections are clearly marked. Search for these comments:
 | The daily report | `DAILY REPORT — COES-style 16:9 deck` |
 | Branding | `BRANDING (customer artwork` |
 | Report email | `SCHEDULED REPORT BY EMAIL` |
+| The card template (all venue industries) | `CARD TEMPLATE (v0.56)` |
+| Financial services (SuRed) | `FINANCIAL SERVICES — cash-point networks` |
+| SuRed's points and Colombia's municipalities | `const SURED_POINTS=` / `const CO_MUNIS=` |
+| Large networks (staggered tick) | `Large networks: a staggered tick` |
+| Map circles (departments, metros, screen grid) | `major metropolitan areas get their own circle` |
 
 The profile — location types, counts, programs, escalation chain, thresholds — is data, not
 code: download it from the menu, edit the JSON, upload it back.

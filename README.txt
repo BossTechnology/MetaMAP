@@ -1,13 +1,16 @@
 MetaMAP — Geo Command Engine (simulation prototype)
-Deployment package · v0.55.2
+Deployment package · v0.56.4
+Four industries: public services (MIMP, Peru) · national retail (NAF NAF, Colombia) ·
+restaurant chains (Delosi, Peru) · financial services (SuRed, Colombia, ~10,000 cash points)
 
 CONTENTS
   engine.html            the whole application, one self-contained file
   index.html             redirect to engine.html (only needed if the server cannot redirect)
   vendor/                Leaflet 1.9.4, jsPDF 2.5.1, DM Sans web fonts
   server/
-    UPGRADE-v0.44-to-v0.55.2.md      READ FIRST if production runs v0.44
     DEVELOPER-HANDOFF.md             START HERE — step-by-step deployment for developers
+    UPGRADE-v0.55.2-to-v0.56.4.md    READ FIRST if production runs v0.55.2 (or v0.44 — then read both)
+    UPGRADE-v0.44-to-v0.55.2.md      the earlier upgrade, only if production still runs v0.44
     ACCEPTANCE-CHECKLIST.md          what the developer fills in and returns when done
     COMMUNICATIONS-IMPLEMENTATION.md reference: contracts, limits, test plan
     supabase/                        schema.sql + three Edge Functions (Twilio, Resend)
@@ -29,6 +32,65 @@ SMS ALERT
   For real messages see server/SMS-ALERT-IMPLEMENTATION.md — Supabase Edge Functions plus
   Twilio, with the schema and the request/response contract.
   Every message is marked as a drill and the send function rejects any that is not.
+
+WHAT CHANGED IN v0.56.4 (all industries)
+  · The green "resolved" orb shows at every zoom again (v0.56.3 turned it into text when zoomed out).
+  · Fewer, larger circles: national zoom on a desktop has one circle per department plus one per major
+    metropolitan area (Colombia adds Cúcuta and Pereira); below that, and on phones at every zoom,
+    circles group by screen space (~140 px) and neighbours closer than a circle's width merge.
+  · Pins appear only when readable for the screen (about 100 on a desktop, 20 on a phone); highlighted
+    and open locations always stay as pins. Critical badges on circles use K.
+
+WHAT CHANGED IN v0.56.3 (all industries)
+  · The map shows only numbered circles at country and region zoom; incident circles, signals, warnings
+    and "resolved" bubbles appear from city zoom (or when you focus an incident). Pins appear once fewer
+    than 150 are in view; highlighted and open locations always stay as pins. A circle's hover gives its
+    locations, status, open incidents and today's activity.
+  · Messages remember the incident they are about: a closed incident no longer leaves a trail of new
+    "reported" signals (a network-wide failure left one in almost every municipality).
+  · SuRed: PSE has its own icon (a bank; it borrowed the restaurant delivery bicycle); network-wide
+    incidents stay at severity 2; volume pace is judged only while a point is open.
+
+WHAT CHANGED IN v0.56.2
+  · SuRed card: a fifth slot, Communications (speech bubble, today's calls and WhatsApp): grey when all
+    is well, amber when a request has waited 15 min, red when unanswered 30 min or contact is lost; it
+    replaces the "no contact" and "request unanswered" chips. Public services' Conversations slot
+    follows the same colours and opens Communications.
+  · Commission shows as a peso value on the card (the percentage and expected rate on hover).
+  · The Transactions tab is labelled TXNS.
+  · Phones: search suggestions now show (they were drawn beneath the full-screen menu) and open at the top.
+  · Dense networks: numbered area circles instead of overlapping pins at city zoom; highlighted and open
+    points stay as pins.
+  · Spanish: the highlight bar's button read "Despejado" (the weather word); status explanations translated.
+
+WHAT CHANGED IN v0.56.1 (financial services refinements; fixes for every industry)
+  · SuRed card: four slots — Cashier · Systems · Equipment · Cash. Electricity is part of Equipment
+    (a power cut counts as equipment out). Payment day is a steady blue calendar above the volume.
+  · Detail tabs (SuRed): Overview · Cashier · Systems · Equipment · Cash · Transactions ·
+    Communications · Signals · Compliance · Configuration. Transactions replaces App & transfers.
+  · Counts of a thousand and more read as K (10K, 10,1K in Spanish, 10.1K in English).
+  · The left menu follows the country: Geo searched Peru's places for every profile (now Colombia's
+    1,122 municipalities and 33 departments for SuRed and NAF NAF); cashier names are Colombian;
+    SuRed's words (regional managers, brands); the Occupancy filter is Cash level for SuRed.
+  · A merged incident chip lists its incidents on hover, each in its colour; a click opens the first.
+  · Fixes: a midday stop in SuRed (utility-cluster check), false "points behind pace" signals on
+    large networks, restaurant incident types offered in SuRed's search, remaining English in Spanish.
+
+WHAT CHANGED IN v0.56.0 (new industry: financial services)
+  · Fourth industry on the start menu: Servicios financieros — SuRed Colombia, about 10,000 cash
+    points (5,717 from the data team's master, the rest generated and marked as such). Direct link:
+    engine.html?industry=financial
+  · One card template for every venue industry. Restaurant cards render exactly as in v0.55.2
+    (verified card by card). SuRed's card: Cashier · Utilities · Systems · Equipment · Cash, and a
+    footer of TXNS · commission % │ meter to the volume goal · volume in pesos.
+  · Cash is two-sided (too little cannot pay out, too much is a robbery risk); subsidy payment days
+    surge payouts; pesos at risk and people not paid per incident; PQRs on the 15-business-day clock;
+    a new Compliance tab (SARLAFT alerts, 24 h SLA, identity-validation holds).
+  · Networks over 1,500 locations run a staggered tick (a rotating share plus every location in an
+    incident, selected or on screen). Smaller profiles are simulated exactly as before.
+  · Detail-tab tooltips now follow the language (they stayed in English after switching to Spanish).
+  · engine.html grows to about 3.7 MB (SuRed's points and Colombia's 1,122 municipalities, DANE, CC0).
+    No server changes; nothing new to install.
 
 WHAT CHANGED IN v0.55.2 (restaurants only)
   · Colours are steady. An icon flashes only when it has been red for 30 minutes and nobody has

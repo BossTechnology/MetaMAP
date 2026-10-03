@@ -7,6 +7,9 @@ Two outbound channels, one Supabase project:
 | National-emergency alert | `metamap-sms` + `metamap-sms-inbound` | Twilio | Alert, welfare check, reminder, acknowledgement — and records replies |
 | Daily report | `metamap-report` | Resend | The Resumen Diario as a PDF attachment |
 
+Unchanged in v0.56: both channels work the same for all four industries. The report speaks the
+industry's words (for SuRed: volume today and pesos at risk).
+
 MetaMAP works without either. With no endpoint configured it simulates: messages are faked with
 realistic replies, and the report downloads locally while the panel shows who it would have gone
 to. That is how demos run on a laptop. Follow this guide when you want real delivery.
