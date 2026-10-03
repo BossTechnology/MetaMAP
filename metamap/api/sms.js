@@ -22,6 +22,25 @@ const limited = rateLimiter(120);
 // Entries are full E.164 numbers or prefixes ending in "*", e.g. "+51*" for all of Peru.
 const allowed = (n) => ALLOWED.some((e) => (e.endsWith('*') ? n.startsWith(e.slice(0, -1)) : n === e));
 
+// The engine writes em dashes and accents, which force UCS-2: 70 characters per segment
+// instead of 160, so a drill message goes out as two segments at twice the price — and
+// multi-segment UCS-2 is what Latin American carriers filter most. Keep the characters
+// GSM-7 already has (é ñ ü ¿ ¡ …) and fold the rest down to ASCII.
+const GSM7 = new Set(
+  '@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !"#¤%&\'()*+,-./0123456789:;<=>?¡'
+  + 'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà'
+  + '^{}\\[~]|€',
+);
+function toGsm7(text) {
+  return [...text.replace(/[—–]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/…/g, '...')]
+    .map((ch) => {
+      if (GSM7.has(ch)) return ch;
+      const plain = ch.normalize('NFD').replace(/[̀-ͯ]/g, '');
+      return GSM7.has(plain) ? plain : '';
+    })
+    .join('');
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'method not allowed' });
   if (!SID || !TOKEN || !FROM || !dbConfigured()) return sendJson(res, 503, { error: 'SMS is not configured on this server' });
@@ -49,7 +68,8 @@ async function send(p, res) {
   if (!/SIMULACRO|DRILL/i.test(body)) return sendJson(res, 400, { error: 'body must be marked as a drill' });
   if (!allowed(to)) return sendJson(res, 403, { error: 'recipient is not allowed by SMS_ALLOWED_NUMBERS' });
 
-  const row = { emergency_id: eid, to_number: to, kind, body };
+  const text = toGsm7(body);
+  const row = { emergency_id: eid, to_number: to, kind, body: text };
   if (await isRepeat(to, kind)) {
     await dbInsert('metamap_sms_sent', { ...row, status: 'suppressed' });
     return sendJson(res, 200, { ok: true, suppressed: true });
@@ -61,7 +81,7 @@ async function send(p, res) {
   if (today.length >= DAILY_LIMIT) return sendJson(res, 429, { error: 'daily SMS limit reached' });
 
   // With the callback set, /api/sms-status replaces "queued" with what actually happened.
-  const form = new URLSearchParams({ To: to, From: FROM, Body: body });
+  const form = new URLSearchParams({ To: to, From: FROM, Body: text, SmartEncoded: 'true' });
   if (STATUS_CALLBACK) form.set('StatusCallback', STATUS_CALLBACK);
 
   const tw = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${SID}/Messages.json`, {
