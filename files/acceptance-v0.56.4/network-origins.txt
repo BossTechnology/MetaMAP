@@ -1,0 +1,27 @@
+MetaMAP v0.56.4 — every network request made by the page
+Captured 3 October 2026 from https://metamap.bzzzbx.com/engine?industry=financial
+Source: the browser's own Performance API, the same list DevTools shows in its Network panel.
+
+DOCUMENT
+  https://metamap.bzzzbx.com/engine        (307 from /, serves engine.html, 3,704,434 bytes)
+
+RESOURCES (6)
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans.css
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-400-normal.woff2
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-500-normal.woff2
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-600-normal.woff2
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-700-normal.woff2
+  https://metamap.bzzzbx.com  /vendor/fonts/dm-sans-latin-800-normal.woff2
+
+DISTINCT ORIGINS: 1
+  https://metamap.bzzzbx.com
+
+Nothing is requested from a third party, with 10,000 SuRed points loaded.
+
+Notes
+- Leaflet is inlined in engine.html, so it makes no request.
+- jsPDF is fetched on demand the first time a report is built, from
+  /vendor/jspdf/jspdf.umd.min.js. The CDN fallback inside jspdfReady() is never reached and
+  would be refused by this site's Content-Security-Policy (script-src 'self').
+- On demand the page also calls its own API on the same origin: /api/ai, and /api/sms and
+  /api/report when an alert or a report is armed.
