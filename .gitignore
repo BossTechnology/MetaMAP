@@ -2,3 +2,8 @@ MetaMAP_deploy_v0.21.zip
 .DS_Store
 .vercel
 files/*.zip
+
+# secretos
+.env
+.env.*
+!.env.example
